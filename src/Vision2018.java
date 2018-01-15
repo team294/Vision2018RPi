@@ -7,6 +7,8 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+//import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.vision.VisionThread;
 
 public class Vision2018 {
@@ -16,9 +18,19 @@ public class Vision2018 {
 	public static double centerX;
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		
 		System.out.println("test");
+		
+		// Test 1 for reading from NetworkTable
+//		NetworkTableInstance n;
+//		NetworkTableEntry ne; 
+//		n = NetworkTableInstance.getDefault();
+//		ne = n.getEntry("GRIP/myLinesReport");
+//		System.out.println("Table entry = " + ne.isValid());
+		
+		// Test 2 for reading from NetworkTable
+		NetworkTable table = NetworkTableInstance.getDefault().getTable("GRIP");
+
 		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
 	    camera.setResolution(GripPipeline.IMG_WIDTH, GripPipeline.IMG_HEIGHT);
