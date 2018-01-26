@@ -3,4 +3,5 @@
 /build/
 *.jar
 *.class
-
+!/lib/*.jar
+!/lib/src/*.jar

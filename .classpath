@@ -5,5 +5,8 @@
 	<classpathentry kind="var" path="opencv" sourcepath="opencv.sources"/>
 	<classpathentry kind="var" path="cscore" sourcepath="cscore.sources"/>
 	<classpathentry kind="var" path="wpilib" sourcepath="wpilib.sources"/>
+	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/ntcore-jni-4.0.0-20180104003424-all.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/ntcore-java-4.0.0-20180104003424.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/wpiutil-java-3.0.0-20180104003936.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
