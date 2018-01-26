@@ -17,25 +17,22 @@ public class Vision2018 {
 	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX;
 
-	public static final int IMG_WIDTH = 640;
-	public static final int IMG_HEIGHT = 480;
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
 		System.out.println("test");
 		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-	    camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+	    camera.setResolution(GripPipeline.IMG_WIDTH, GripPipeline.IMG_HEIGHT);
 	    camera.setFPS(15);
 	    
-	    CvSink m_cvSink = new CvSink("VisionPipeline CvSink");
+	    CvSink m_cvSink = new CvSink("Test CvSink");
 	    m_cvSink.setSource(camera);
 	    
 	    Mat m_image = new Mat();
 	    
 	    // Run pipeline 10 times
-	    for (int i = 0; i<10; i++) {	    	
+//	    for (int i = 0; i<10; i++) {	    	
 
 	    	long frameTime = m_cvSink.grabFrame(m_image, 10.0);
 		    if (frameTime == 0) {
@@ -55,7 +52,7 @@ public class Vision2018 {
 //		        	System.out.println("No countours found.");
 //		        }
 		    }
-	    }
+//	    }
 	    
 
 	    
