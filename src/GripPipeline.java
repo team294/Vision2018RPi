@@ -27,9 +27,6 @@ import org.opencv.objdetect.*;
 */
 public class GripPipeline implements VisionPipeline {
 
-	public static final int IMG_WIDTH = 640;
-	public static final int IMG_HEIGHT = 480;
-	
 	//Outputs
 	private Mat blurOutput = new Mat();
 	private Mat hsvThresholdOutput = new Mat();

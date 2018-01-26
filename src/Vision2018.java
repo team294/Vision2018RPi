@@ -13,49 +13,70 @@ public class Vision2018 {
 	
 	public static VisionThread visionThread;
 	public static Object imgLock = new Object();
+	
+	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX;
 
+	public static final int IMG_WIDTH = 640;
+	public static final int IMG_HEIGHT = 480;
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
 		System.out.println("test");
 		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-	    camera.setResolution(GripPipeline.IMG_WIDTH, GripPipeline.IMG_HEIGHT);
+	    camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
 	    camera.setFPS(15);
 	    
-	    CvSink m_cvSink = new CvSink("Test CvSink");
+	    CvSink m_cvSink = new CvSink("VisionPipeline CvSink");
 	    m_cvSink.setSource(camera);
 	    
 	    Mat m_image = new Mat();
-	    long frameTime = m_cvSink.grabFrame(m_image, 10.0);
-	    if (frameTime == 0) {
-	      // There was an error, report it
-	      String error = m_cvSink.getError();
-	      System.out.println("Error: " + error);
-	    } else {
-	      // No errors, process the image
-	    	System.out.println("Success!");
-	    }
-	 
 	    
-	    visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
-	    	if (!pipeline.filterContoursOutput().isEmpty()) {
-	            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-	            synchronized (imgLock) {
-	                centerX = r.x + (r.width / 2);
-	            }
-	        }
-	    });
-	    visionThread.start();
-	    
-	    while (true) {
-	    	double centerX2;
-		    synchronized (imgLock) {
-		        centerX2 = centerX;
+	    // Run pipeline 10 times
+	    for (int i = 0; i<10; i++) {	    	
+
+	    	long frameTime = m_cvSink.grabFrame(m_image, 10.0);
+		    if (frameTime == 0) {
+			    // There was an error, report it
+			    String error = m_cvSink.getError();
+			    System.out.println("Error: " + error);
+		    } else {
+		    	// No errors, process the image
+		    	System.out.println("Success!");
+		
+//		    	pipeline.process(m_image);
+//		    	if (!pipeline.filterContoursOutput().isEmpty()) {
+//		            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+//	                centerX = r.x + (r.width / 2);
+//	    		    System.out.println("Center of 1st countour:  X = " + centerX);
+//		        } else {
+//		        	System.out.println("No countours found.");
+//		        }
 		    }
-		    System.out.println(centerX2);
 	    }
+	    
+
+	    
+	    
+//	    visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
+//	    	if (!pipeline.filterContoursOutput().isEmpty()) {
+//	            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+//	            synchronized (imgLock) {
+//	                centerX = r.x + (r.width / 2);
+//	            }
+//	        }
+//	    });
+//	    visionThread.start();
+//	    
+//	    while (true) {
+//	    	double centerX2;
+//		    synchronized (imgLock) {
+//		        centerX2 = centerX;
+//		    }
+//		    System.out.println(centerX2);
+//	    }
 		
 
 	}
