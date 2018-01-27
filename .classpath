@@ -7,5 +7,8 @@
 	<classpathentry kind="var" path="wpilib" sourcepath="wpilib.sources"/>
 	<classpathentry kind="var" path="networktables" sourcepath="networktables.sources"/>
 	<classpathentry kind="var" path="wpiutil" sourcepath="wpiutil.sources"/>
+	<classpathentry kind="lib" path="C:/Users/team/wpilib/user/java/lib/ntcore-jni-4.0.0-20180104003424-all.jar"/>
+	<classpathentry kind="lib" path="C:/Users/team/wpilib/user/java/lib/cscore-jni-1.1.0-beta-4-20180102122029-2-g882399c-dirty-all.jar"/>
+	<classpathentry kind="lib" path="C:/Users/team/wpilib/user/java/lib/cscore-jni-1.1.0-20180104003536-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
