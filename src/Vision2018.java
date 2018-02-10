@@ -6,14 +6,11 @@ import org.opencv.imgproc.Imgproc;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.vision.VisionThread;
+import edu.wpi.cscore.VideoMode;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Vision2018 {
-	
-	public static VisionThread visionThread;
-	public static Object imgLock = new Object();
-	
+		
 	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX;
 
@@ -22,9 +19,14 @@ public class Vision2018 {
 		
 		System.out.println("test");
 		
+		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		inst.startClientTeam(294);
+		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-	    camera.setResolution(GripPipeline.IMG_WIDTH, GripPipeline.IMG_HEIGHT);
-	    camera.setFPS(15);
+	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, GripPipeline.IMG_WIDTH, GripPipeline.IMG_HEIGHT, 30);
+	    camera.setExposureManual(23);
+	    camera.setWhiteBalanceManual(2800);
+	    camera.setBrightness(53);
 	    
 	    CvSink m_cvSink = new CvSink("Test CvSink");
 	    m_cvSink.setSource(camera);
@@ -34,6 +36,7 @@ public class Vision2018 {
 	    // Run pipeline 10 times
 //	    for (int i = 0; i<10; i++) {	    	
 
+	    while (true) {
 	    	long frameTime = m_cvSink.grabFrame(m_image, 10.0);
 		    if (frameTime == 0) {
 			    // There was an error, report it
@@ -43,7 +46,7 @@ public class Vision2018 {
 		    	// No errors, process the image
 		    	System.out.println("Success!");
 		
-//		    	pipeline.process(m_image);
+		    	pipeline.process(m_image);
 //		    	if (!pipeline.filterContoursOutput().isEmpty()) {
 //		            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
 //	                centerX = r.x + (r.width / 2);
@@ -52,7 +55,7 @@ public class Vision2018 {
 //		        	System.out.println("No countours found.");
 //		        }
 		    }
-//	    }
+	    }
 	    
 
 	    
