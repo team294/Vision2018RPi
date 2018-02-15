@@ -2,13 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="opencv" sourcepath="opencv.sources"/>
-	<classpathentry kind="var" path="cscore" sourcepath="cscore.sources"/>
-	<classpathentry kind="var" path="wpilib" sourcepath="wpilib.sources"/>
-	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/ntcore-jni-4.0.0-20180104003424-all.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/ntcore-java-4.0.0-20180104003424.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/wpiutil-java-3.0.0-20180104003936.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/cscore-jni-1.1.0-20180104003536-all.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Don and Kathy/Documents/GitHub/Vision2018RPi/lib/opencv-jni-3.2.0-all.jar"/>
+	<classpathentry kind="lib" path="lib/ntcore-java-4.0.0-20180104003424.jar"/>
+	<classpathentry kind="lib" path="lib/wpiutil-java-3.0.0-20180104003936.jar"/>
+	<classpathentry kind="lib" path="lib/cscore-java-1.1.0-20180104003536.jar"/>
+	<classpathentry kind="lib" path="lib/opencv-java-3.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
