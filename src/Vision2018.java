@@ -14,7 +14,7 @@ public class Vision2018 {
 	public static VisionThread visionThread;
 	public static Object imgLock = new Object();
 	
-	public static GripPipeline pipeline = new GripPipeline();
+//	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX;
 
 	public static void main(String[] args) {
@@ -57,23 +57,23 @@ public class Vision2018 {
 
 	    
 	    
-//	    visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
-//	    	if (!pipeline.filterContoursOutput().isEmpty()) {
-//	            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-//	            synchronized (imgLock) {
-//	                centerX = r.x + (r.width / 2);
-//	            }
-//	        }
-//	    });
-//	    visionThread.start();
-//	    
-//	    while (true) {
-//	    	double centerX2;
-//		    synchronized (imgLock) {
-//		        centerX2 = centerX;
-//		    }
-//		    System.out.println(centerX2);
-//	    }
+	    visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
+	    	if (!pipeline.filterContoursOutput().isEmpty()) {
+	            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+	            synchronized (imgLock) {
+	                centerX = r.x + (r.width / 2);
+	            }
+	        }
+	    });
+	    visionThread.start();
+	    
+	    while (true) {
+	    	double centerX2;
+		    synchronized (imgLock) {
+		        centerX2 = centerX;
+		    }
+		    System.out.println(centerX2);
+	    }
 		
 
 	}
