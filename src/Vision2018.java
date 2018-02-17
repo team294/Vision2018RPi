@@ -13,6 +13,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class Vision2018 {
 
+	public static final int IMG_WIDTH = 640;
+	public static final int IMG_HEIGHT = 480;
+	
 	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX, centerY;
 
@@ -36,10 +39,10 @@ public class Vision2018 {
 		
 		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, GripPipeline.IMG_WIDTH, GripPipeline.IMG_HEIGHT, 30);
+	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, 30);
 	    camera.setExposureManual(23);
 	    camera.setWhiteBalanceManual(2800);
-	    camera.setBrightness(53);
+	    camera.setBrightness(23);
 	    
 	    CvSink m_cvSink = new CvSink("Test CvSink");
 	    m_cvSink.setSource(camera);
@@ -63,8 +66,8 @@ public class Vision2018 {
 		    	pipeline.process(m_image);
 		    	
 		    	// Get the center X and Y coords of the first contour found
-		    	if (!pipeline.filterContoursOutput().isEmpty()) {
-		            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+		    	if (!pipeline.convexHullsOutput().isEmpty()) {
+		            Rect r = Imgproc.boundingRect(pipeline.convexHullsOutput().get(0));
 	                centerX = r.x + (r.width / 2);
 	                centerY = r.y + (r.height / 2);
 
