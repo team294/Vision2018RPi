@@ -8,6 +8,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
+import edu.wpi.cscore.VideoProperty;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTable; 
 import edu.wpi.first.networktables.NetworkTableEntry; 
@@ -44,6 +45,12 @@ public class Vision2018 {
 	    camera.setWhiteBalanceManual(2800);
 	    camera.setBrightness(23);
 	    
+	    // List all properties from the camera
+	    // With the right property, we can set contrast, etc.
+	    for (VideoProperty vp : camera.enumerateProperties()) {
+	    	System.out.println("Property = " + vp.getName() + ", Value = " + vp);
+	    }
+	    	    
 	    CvSink m_cvSink = new CvSink("Test CvSink");
 	    m_cvSink.setSource(camera);
 	    
