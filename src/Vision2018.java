@@ -1,5 +1,6 @@
 
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 //import org.usfirst.frc.team294.vision.GripPipeline;
@@ -12,34 +13,36 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry; 
 
 public class Vision2018 {
-		
+
+	public static final int IMG_WIDTH = 640;
+	public static final int IMG_HEIGHT = 480;
+	
 	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX, centerY;
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+    	Rect r, rBiggest = new Rect();		// Rectangles for image filtering
+    	int maxWidth;			// Size of biggest rectangle
 		
 		System.out.println("test");
 		
-		// Creates a NetworkTable for Raspberry Pi information 
-		
+		// Creates a NetworkTable for Raspberry Pi information 		
 		NetworkTableEntry xCoord; 
 		NetworkTableEntry yCoord; 	
 		
 		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-		NetworkTable pi = inst.getTable("Pi"); 
 		inst.startClientTeam(294);
+		NetworkTable pi = inst.getTable("Pi"); 
 		
 		xCoord = pi.getEntry("X"); 
 		yCoord = pi.getEntry("Y"); 
 		
 		
-		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, GripPipeline.IMG_WIDTH, GripPipeline.IMG_HEIGHT, 30);
+	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, 30);
 	    camera.setExposureManual(23);
 	    camera.setWhiteBalanceManual(2800);
-	    camera.setBrightness(53);
+	    camera.setBrightness(23);
 	    
 	    CvSink m_cvSink = new CvSink("Test CvSink");
 	    m_cvSink.setSource(camera);
@@ -62,46 +65,35 @@ public class Vision2018 {
 		    	// Run the GRIP pipeline
 		    	pipeline.process(m_image);
 		    	
-		    	// Get the center X and Y coords of the first contour found
-		    	if (!pipeline.filterContoursOutput().isEmpty()) {
-		            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-	                centerX = r.x + (r.width / 2);
-	                centerY = r.y + (r.height / 2);
+		    	// Find the output ConvexHull with the biggest width.  That will
+		    	// probably be the closest box, which is probably the one we want.
+		    	maxWidth = -1;
+	    		for (MatOfPoint mp : pipeline.convexHullsOutput()) {
+	    			r = Imgproc.boundingRect(mp);
+	    			if (r.width > maxWidth) {
+	    				rBiggest = r;
+	    				maxWidth = r.width;
+	    			}		
+	    		}
+
+		    	// Get the center X and Y coords of the biggest contour found
+		    	if (maxWidth > -1) {
+	                centerX = rBiggest.x + (rBiggest.width / 2);
+	                centerY = rBiggest.y + (rBiggest.height / 2);
 
 			    	xCoord.setDouble(centerX); 
 			    	yCoord.setDouble(centerY);
 	                
-	    		    System.out.println("Center of 1st countour:  X = " + centerX + ", Y = " + centerY);
+	    		    System.out.println("Center of biggest countour:  X = " + centerX + ", Y = " + centerY);
 		        } else {
 		        	System.out.println("No countours found.");
+			    	xCoord.setDouble(-1); 
+			    	yCoord.setDouble(-1);
 		        }
 
 		    }
 		    
 	    }
-	  
-	    
-
-	    
-	    
-//	    visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
-//	    	if (!pipeline.filterContoursOutput().isEmpty()) {
-//	            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-//	            synchronized (imgLock) {
-//	                centerX = r.x + (r.width / 2);
-//	            }
-//	        }
-//	    });
-//	    visionThread.start();
-//	    
-//	    while (true) {
-//	    	double centerX2;
-//		    synchronized (imgLock) {
-//		        centerX2 = centerX;
-//		    }
-//		    System.out.println(centerX2);
-//	    }
-		
 
 	}
 
