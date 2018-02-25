@@ -8,6 +8,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
+import edu.wpi.cscore.VideoProperty;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTable; 
 import edu.wpi.first.networktables.NetworkTableEntry; 
@@ -16,6 +17,7 @@ public class Vision2018 {
 
 	public static final int IMG_WIDTH = 640;
 	public static final int IMG_HEIGHT = 480;
+	public static final int IMG_FPS = 30;
 	
 	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX, centerY;
@@ -39,11 +41,44 @@ public class Vision2018 {
 		
 		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, 30);
-	    camera.setExposureManual(23);
+	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, IMG_FPS);
+	    camera.setExposureAuto();  // Start in auto exposure mode so that we can set brightness
+	    camera.setBrightness(15);  // Setting brightness only works correctly in auto exposure mode (?)
+	    camera.getProperty("contrast").set(80);
+	    camera.getProperty("saturation").set(100);
+	    camera.setExposureManual(24);
 	    camera.setWhiteBalanceManual(2800);
-	    camera.setBrightness(23);
 	    
+	    // List all properties from the camera
+	    // With the right property, we can set contrast, etc.
+	    for (VideoProperty vp : camera.enumerateProperties()) {
+	    	if (vp.isString())
+	    		System.out.println("Property = " + vp.getName() + ", string = " + vp.getString());
+	    	else
+	    		System.out.println("Property = " + vp.getName() + ", Value = " + vp.get() + ", min = " + vp.getMin() + ", max = " + vp.getMax());
+	    }
+	    /* Here is a dump of the properties from a MS LifeCam:
+	     * 
+	     * Property = raw_brightness, Value = 81, min = 30, max = 255
+	     * Property = brightness, Value = 23, min = 0, max = 100
+	     * Property = raw_contrast, Value = 9, min = 0, max = 10
+	     * Property = contrast, Value = 90, min = 0, max = 100
+	     * Property = raw_saturation, Value = 132, min = 0, max = 200
+	     * Property = saturation, Value = 66, min = 0, max = 100
+	     * Property = white_balance_temperature_auto, Value = 0, min = 0, max = 1 (0 = manual, 1 = auto)
+	     * Property = power_line_frequency, Value = 2, min = 0, max = 2  (0 = disabled, 1 = 50 Hz, 2 = 60 Hz)
+	     * Property = white_balance_temperature, Value = 2800, min = 2800, max = 10000
+	     * Property = raw_sharpness, Value = 50, min = 0, max = 50
+	     * Property = sharpness, Value = 100, min = 0, max = 100
+	     * Property = backlight_compensation, Value = 0, min = 0, max = 10
+	     * Property = exposure_auto, Value = 1, min = 0, max = 3 (1 = manual mode, 3 = aperture priority mode)
+	     * Property = raw_exposure_absolute, Value = 20, min = 5, max = 20000
+	     * Property = exposure_absolute, Value = 23, min = 0, max = 100
+	     * Property = pan_absolute, Value = 0, min = -201600, max = 201600
+	     * Property = tilt_absolute, Value = 0, min = -201600, max = 201600
+	     * Property = zoom_absolute, Value = 0, min = 0, max = 10
+	     */
+	    	    
 	    CvSink m_cvSink = new CvSink("Test CvSink");
 	    m_cvSink.setSource(camera);
 	    
