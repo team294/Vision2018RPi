@@ -26,13 +26,13 @@ Property = raw_contrast, Value = 9, min = 0, max = 10
 Property = contrast, Value = 90, min = 0, max = 100
 Property = raw_saturation, Value = 132, min = 0, max = 200
 Property = saturation, Value = 66, min = 0, max = 100
-Property = white_balance_temperature_auto, Value = 0, min = 0, max = 1
-Property = power_line_frequency, Value = 2, min = 0, max = 2
+Property = white_balance_temperature_auto, Value = 0, min = 0, max = 1 (0 = manual, 1 = auto)
+Property = power_line_frequency, Value = 2, min = 0, max = 2   (0 = disabled, 1 = 50 Hz, 2 = 60 Hz)
 Property = white_balance_temperature, Value = 2800, min = 2800, max = 10000
 Property = raw_sharpness, Value = 50, min = 0, max = 50
 Property = sharpness, Value = 100, min = 0, max = 100
 Property = backlight_compensation, Value = 0, min = 0, max = 10
-Property = exposure_auto, Value = 1, min = 0, max = 3
+Property = exposure_auto, Value = 1, min = 0, max = 3 (1 = manual mode, 3 = aperture priority mode)
 Property = raw_exposure_absolute, Value = 20, min = 5, max = 20000
 Property = exposure_absolute, Value = 23, min = 0, max = 100
 Property = pan_absolute, Value = 0, min = -201600, max = 201600
