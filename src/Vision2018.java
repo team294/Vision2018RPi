@@ -44,8 +44,8 @@ public class Vision2018 {
 	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, IMG_FPS);
 	    camera.setExposureAuto();  // Start in auto exposure mode so that we can set brightness
 	    camera.setBrightness(15);  // Setting brightness only works correctly in auto exposure mode (?)
-	    camera.getProperty("contrast").set(80);
-	    camera.getProperty("saturation").set(60);
+	    camera.getProperty("contrast").set(50);
+	    camera.getProperty("saturation").set(75);
 	    camera.setExposureManual(24);
 	    camera.setWhiteBalanceManual(2800);
 	    
