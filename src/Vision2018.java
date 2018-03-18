@@ -13,6 +13,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTable; 
 import edu.wpi.first.networktables.NetworkTableEntry; 
 
+
 public class Vision2018 {
 
 	public static final int IMG_WIDTH = 640;
@@ -21,29 +22,24 @@ public class Vision2018 {
 	
 	public static GripPipeline pipeline = new GripPipeline();
 	public static double centerX, centerY;
-
+	
+	
 	public static void main(String[] args) {
-    	Rect r, rBiggest = new Rect();		// Rectangles for image filtering
-    	int maxWidth;			// Size of biggest rectangle
+		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
+		UsbCamera driveCamera = CameraServer.getInstance().startAutomaticCapture(1);
 		
-		System.out.println("test");
+		cameraSetUp(camera);
+		cameraSetUp(driveCamera);    
 		
-		// Creates a NetworkTable for Raspberry Pi information 		
-		NetworkTableEntry xCoord; 
-		NetworkTableEntry yCoord; 	
+		imageProcess(camera);
+	    }
+	
+	
+	public static void cameraSetUp(UsbCamera camera) {
 		
-		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-		inst.startClientTeam(294);
-		NetworkTable pi = inst.getTable("Pi"); 
-		
-		xCoord = pi.getEntry("X"); 
-		yCoord = pi.getEntry("Y"); 
-		
-		
-		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
 	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, IMG_FPS);
 	    camera.setExposureAuto();  // Start in auto exposure mode so that we can set brightness
-	    camera.setBrightness(15);  // Setting brightness only works correctly in auto exposure mode (?)
+	    camera.setBrightness(25);  // Setting brightness only works correctly in auto exposure mode (?)
 	    camera.getProperty("contrast").set(80);
 	    camera.getProperty("saturation").set(60);
 	    camera.setExposureManual(24);
@@ -57,6 +53,7 @@ public class Vision2018 {
 	    	else
 	    		System.out.println("Property = " + vp.getName() + ", Value = " + vp.get() + ", min = " + vp.getMin() + ", max = " + vp.getMax());
 	    }
+	    
 	    /* Here is a dump of the properties from a MS LifeCam:
 	     * 
 	     * Property = raw_brightness, Value = 81, min = 30, max = 255
@@ -78,8 +75,27 @@ public class Vision2018 {
 	     * Property = tilt_absolute, Value = 0, min = -201600, max = 201600
 	     * Property = zoom_absolute, Value = 0, min = 0, max = 10
 	     */
-	    	    
-	    CvSink m_cvSink = new CvSink("Test CvSink");
+	    	
+	}
+	public static void imageProcess(UsbCamera camera) {
+		Rect r, rBiggest = new Rect();		// Rectangles for image filtering
+    	int maxWidth;			// Size of biggest rectangle
+		
+		System.out.println("test");
+		
+		// Creates a NetworkTable for Raspberry Pi information 		
+		NetworkTableEntry xCoord; 
+		NetworkTableEntry yCoord; 	
+		
+		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		inst.startClientTeam(294);
+		NetworkTable pi = inst.getTable("Pi"); 
+		
+		xCoord = pi.getEntry("X"); 
+		yCoord = pi.getEntry("Y"); 
+		
+		
+		CvSink m_cvSink = new CvSink("Test CvSink");
 	    m_cvSink.setSource(camera);
 	    
 	    Mat m_image = new Mat();
@@ -127,9 +143,7 @@ public class Vision2018 {
 		        }
 
 		    }
-		    
-	    }
-
 	}
-
+	
+}
 }
