@@ -25,36 +25,27 @@ public class Vision2018 {
 	
 	
 	public static void main(String[] args) {
-		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
-		UsbCamera driveCamera = CameraServer.getInstance().startAutomaticCapture(1);
+		Rect r, rBiggest = new Rect();		// Rectangles for image filtering
+    	int maxWidth;			// Size of biggest rectangle
 		
-		cameraSetUp(camera);
-		cameraSetUp(driveCamera);    
+		System.out.println("test");
 		
-		imageProcess(camera);
-	    }
-	
-	
-	public static void cameraSetUp(UsbCamera camera) {
+		// Creates a NetworkTable for Raspberry Pi information 		
+		NetworkTableEntry xCoord; 
+		NetworkTableEntry yCoord; 	
 		
-	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, IMG_FPS);
-	    camera.setExposureAuto();  // Start in auto exposure mode so that we can set brightness
-	    camera.setBrightness(25);  // Setting brightness only works correctly in auto exposure mode (?)
-	    camera.getProperty("contrast").set(80);
-	    camera.getProperty("saturation").set(60);
-	    camera.setExposureManual(24);
-	    camera.setWhiteBalanceManual(2800);
-	    
-	    // List all properties from the camera
-	    // With the right property, we can set contrast, etc.
-	    for (VideoProperty vp : camera.enumerateProperties()) {
-	    	if (vp.isString())
-	    		System.out.println("Property = " + vp.getName() + ", string = " + vp.getString());
-	    	else
-	    		System.out.println("Property = " + vp.getName() + ", Value = " + vp.get() + ", min = " + vp.getMin() + ", max = " + vp.getMax());
-	    }
-	    
-	    /* Here is a dump of the properties from a MS LifeCam:
+		NetworkTableInstance inst = NetworkTableInstance.getDefault();
+		inst.startClientTeam(294);
+		NetworkTable pi = inst.getTable("Pi"); 
+		
+		xCoord = pi.getEntry("X"); 
+		yCoord = pi.getEntry("Y"); 
+		
+		
+		UsbCamera camera = setUpContourCamera("Contour Camera", 0);
+		UsbCamera driverCamera = setUpDriverCamera("Driver Camera", 1);
+		
+		  /* Here is a dump of the properties from a MS LifeCam:
 	     * 
 	     * Property = raw_brightness, Value = 81, min = 30, max = 255
 	     * Property = brightness, Value = 23, min = 0, max = 100
@@ -74,32 +65,12 @@ public class Vision2018 {
 	     * Property = pan_absolute, Value = 0, min = -201600, max = 201600
 	     * Property = tilt_absolute, Value = 0, min = -201600, max = 201600
 	     * Property = zoom_absolute, Value = 0, min = 0, max = 10
-	     */
-	    	
-	}
-	public static void imageProcess(UsbCamera camera) {
-		Rect r, rBiggest = new Rect();		// Rectangles for image filtering
-    	int maxWidth;			// Size of biggest rectangle
+	     */		
 		
-		System.out.println("test");
-		
-		// Creates a NetworkTable for Raspberry Pi information 		
-		NetworkTableEntry xCoord; 
-		NetworkTableEntry yCoord; 	
-		
-		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-		inst.startClientTeam(294);
-		NetworkTable pi = inst.getTable("Pi"); 
-		
-		xCoord = pi.getEntry("X"); 
-		yCoord = pi.getEntry("Y"); 
-		
-		
-		CvSink m_cvSink = new CvSink("Test CvSink");
+		CvSink m_cvSink = new CvSink("ContourCamera Test CvSink");
 	    m_cvSink.setSource(camera);
 	    
 	    Mat m_image = new Mat();
-	    
 	    // Run pipeline 10 times
 //	    for (int i = 0; i<10; i++) {	    	
 
@@ -141,9 +112,64 @@ public class Vision2018 {
 			    	xCoord.setDouble(-1); 
 			    	yCoord.setDouble(-1);
 		        }
-
 		    }
+	    }
 	}
 	
-}
+	/*
+	 * sets up the camera used for vision tracking with 
+	 * properties of brightness, exposure, contrast, etc. 
+	 * @param name, deviceNum
+	 */
+	public static UsbCamera setUpContourCamera(String name, int deviceNum) {
+		
+		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(name, deviceNum);
+		camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, IMG_FPS);
+	    camera.setExposureAuto();  // Start in auto exposure mode so that we can set brightness
+	    camera.setBrightness(15);  // Setting brightness only works correctly in auto exposure mode (?)
+	    camera.getProperty("contrast").set(80);
+	    camera.getProperty("saturation").set(60);
+	    camera.setExposureManual(24);
+	    camera.setWhiteBalanceManual(2800);
+	    
+	 // List all properties from the camera
+	 // With the right property, we can set contrast, etc.
+	    for (VideoProperty vp : camera.enumerateProperties()) {
+	    	if (vp.isString())
+	    		System.out.println("Property = " + vp.getName() + ", string = " + vp.getString());
+	    	else
+	    		System.out.println("Property = " + vp.getName() + ", Value = " + vp.get() + ", min = " + vp.getMin() + ", max = " + vp.getMax());
+	    }
+	    return camera;
+	}
+	
+	/*
+	 * sets up the camera used by the driver with 
+	 * properties of brightness, exposure, contrast, etc. 
+	 * @param name, deviceNum
+	 */
+	public static UsbCamera setUpDriverCamera(String name, int deviceNum) {
+		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(name, deviceNum);
+//	    camera.setVideoMode(VideoMode.PixelFormat.kYUYV, IMG_WIDTH, IMG_HEIGHT, IMG_FPS);
+	    camera.setExposureAuto();  // Start in auto exposure mode so that we can set brightness
+	    camera.setBrightness(25);  // Setting brightness only works correctly in auto exposure mode (?)
+//	    camera.getProperty("contrast").set(80);
+//	    camera.getProperty("saturation").set(60);
+	    camera.setExposureManual(20);
+//	    camera.setWhiteBalanceManual(2800);
+	    
+	 // List all properties from the camera
+	 // With the right property, we can set contrast, etc.
+	    for (VideoProperty vp : camera.enumerateProperties()) {
+	    	if (vp.isString())
+	    		System.out.println("Property = " + vp.getName() + ", string = " + vp.getString());
+	    	else
+	    		System.out.println("Property = " + vp.getName() + ", Value = " + vp.get() + ", min = " + vp.getMin() + ", max = " + vp.getMax());
+	    }
+	    
+	    CvSink m_cvSink2 = new CvSink("DriverCamera Test CvSink");
+	    m_cvSink2.setSource(camera);
+	    return camera;
+	}
+	
 }
