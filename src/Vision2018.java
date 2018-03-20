@@ -39,16 +39,28 @@ public class Vision2018 {
 		yCoord = pi.getEntry("Y"); 
 		
 		// Create camera servers and sinks to keep them active
-		UsbCamera contourCamera = setUpContourCamera("Contour Camera", 0);
-		UsbCamera driverCamera = setUpDriverCamera("Driver Camera", 1);
-		
-		CvSink m_cvSink = new CvSink("ContourCamera CvSink");
-	    m_cvSink.setSource(contourCamera);
-	    CvSink m_cvSink2 = new CvSink("DriverCamera CvSink");
-	    m_cvSink2.setSource(driverCamera);
+		// Make the drive camera = first camera, in case only one camera is plugged in
+		UsbCamera driverCamera = setUpDriverCamera("Driver Camera", 0);
+	    CvSink m_cvSinkDriver = new CvSink("DriverCamera CvSink");
+	    m_cvSinkDriver.setSource(driverCamera);
 
-	    // Run pipeline
-	    while (true) {
+	    // Make the vision camera = 2nd camera, in case it is not plugged in
+	    CvSink m_cvSink= new CvSink("ContourCamera CvSink");;
+	    boolean contourCameraFound = false;
+	    try {
+			UsbCamera contourCamera = setUpContourCamera("Contour Camera", 1);			
+		    m_cvSink.setSource(contourCamera);
+		    System.out.println("2 cameras found.");
+		    contourCameraFound = true;
+		} catch (Exception e) {
+			System.out.println("1 camera found.");
+		}
+		
+	    // If we only have 1 camera, then just sit in an infinite loop to feed images
+	    while (!contourCameraFound) ;
+
+	    // If we have 2 cameras, then run pipeline on the 2nd camera
+	    while (contourCameraFound) {
 	    	long frameTime = m_cvSink.grabFrame(m_image, 10.0);
 		    if (frameTime == 0) {
 			    // There was an error, report it
