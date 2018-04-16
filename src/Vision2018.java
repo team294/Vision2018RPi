@@ -39,8 +39,14 @@ public class Vision2018 {
 		yCoord = pi.getEntry("Y"); 
 		
 		// Create camera servers and sinks to keep them active
+		
+		// To get absolute camera addresses:
+		// 1. Use "dmesg"
+		// 2. Use "udevadm info --query=all --name=/dev/video0"  (or video1)
+		
 		// Make the drive camera = first camera, in case only one camera is plugged in
-		UsbCamera driverCamera = setUpDriverCamera("Driver Camera", "/dev/v4l/by-path/platform-3f980000.usb-usb-0:1.2:1.0-video-index0");
+		UsbCamera driverCamera = setUpDriverCamera("Driver Camera", 0);
+//		UsbCamera driverCamera = setUpDriverCamera("Driver Camera", "/dev/v4l/by-path/platform-3f980000.usb-usb-0:1.2:1.0-video-index0");
 	    CvSink m_cvSinkDriver = new CvSink("DriverCamera CvSink");
 	    m_cvSinkDriver.setSource(driverCamera);
 
@@ -48,7 +54,8 @@ public class Vision2018 {
 	    CvSink m_cvSink= new CvSink("ContourCamera CvSink");;
 	    boolean contourCameraFound = false;
 	    try {
-			UsbCamera contourCamera = setUpContourCamera("Contour Camera", "/dev/v4l/by-path/platform-3f980000.usb-usb-0:1.4:1.0-video-index0");			
+			UsbCamera contourCamera = setUpContourCamera("Contour Camera", 1);			
+//			UsbCamera contourCamera = setUpContourCamera("Contour Camera", "/dev/v4l/by-path/platform-3f980000.usb-usb-0:1.4:1.0-video-index0");			
 		    m_cvSink.setSource(contourCamera);
 		    System.out.println("2 cameras found.");
 		    contourCameraFound = true;
@@ -108,7 +115,8 @@ public class Vision2018 {
 	 * @param deviceNum USB camera number
 	 * @return camera object
 	 */
-	public static UsbCamera setUpContourCamera(String name, String deviceNum) {
+	public static UsbCamera setUpContourCamera(String name, int deviceNum) {
+//	public static UsbCamera setUpContourCamera(String name, String deviceNum) {
 		final int IMG_WIDTH = 640;
 		final int IMG_HEIGHT = 480;
 		final int IMG_FPS = 30;
@@ -164,7 +172,8 @@ public class Vision2018 {
 	 * @param deviceNum USB camera number
 	 * @return camera object
 	 */
-	public static UsbCamera setUpDriverCamera(String name, String deviceNum) {
+	public static UsbCamera setUpDriverCamera(String name, int deviceNum) {
+//	public static UsbCamera setUpDriverCamera(String name, String deviceNum) {
 		final int IMG_WIDTH = 320;  // Was 160
 		final int IMG_HEIGHT = 240;  // Was 120
 		final int IMG_FPS = 30;
